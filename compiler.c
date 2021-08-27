@@ -9,20 +9,18 @@
 #define print_warning(fmt, args...) fprintf(stdout, "\033[01;33mWarning:\033[0m "fmt, ##args); fflush(stdout);
 #define print_failure(fmt, args...) fprintf(stderr, "\033[01;31mFailure:\033[0m "fmt, ##args); fflush(stderr);
 #define print_manuals(fmt, args...) fprintf(stdout, "\033[01;34mManuals:\033[0m "fmt, ##args); fflush(stdout);
-
+char *keyword = {"print"};
 
 int main(int argc, char **argv)
 {
+    
     char c; 
-
+    
     int counter = 1;
 
     char *output_file = "program.out"; // Default output file if "-o" isn't chosen
-    
-    bool eof = true;
 
     FILE *fptr;
-
 
     int i = 0;
 
@@ -55,7 +53,6 @@ int main(int argc, char **argv)
     print_success("File to compile -> %s\n", source_file);
     print_success("Output binary   -> %s\n\n", output_file);
 
-
     fptr = fopen(source_file, "r");
     if (fptr == NULL)
     {
@@ -73,18 +70,14 @@ int main(int argc, char **argv)
         return -1;
     }
 
-
     char data[file_len];
-
-
 
     fread(data, file_len, 1, fptr);
 
-
     data[file_len] = '\0';
 
-
     fptr = fopen(source_file, "r");
+
     while(fgets(line[i], LSIZ, fptr)) 
 	{
         line[i][strlen(line[i]) - 1] = '\0';
@@ -94,8 +87,13 @@ int main(int argc, char **argv)
 
     for(i = 0; i < tot; ++i)
     {
-        printf("Counter[%d], Line[%s]\n", counter++, line[i]);
+        if(!strncmp(line[i],"print",256)){
+            printf("found print on line%d\n",counter++);}
+
+        else{
+            printf(" %s %d\n", line[i],counter++);}
     }
+
 
     fclose(fptr);
 
