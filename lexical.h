@@ -36,12 +36,13 @@ int isOperator(char ch)
 
 int main()
 {
+    int counter=1;
     char ch;
     char buf[16];
     int i = 0;
     int break_detected = 0;
 
-    FILE *fptr = fopen("test_file", "r");
+    FILE *fptr = fopen("file.txt", "r");
 
     if (fptr == NULL)
     {
@@ -50,11 +51,14 @@ int main()
     }
 
     while (ch != EOF) {
+        
         ch = fgetc(fptr);
         printf("READ CHARACTER: %s%c [%02X]\n", (ch==EOF)?"(end of file)":"", (ch==EOF)?0:ch, ch & 0xFF);
-
+        if(ch=='\n'){
+            counter++;
+        }
         if (isOperator(ch)) {
-            printf("%c is operator\n", ch);
+            printf("%c is operator line number: %d\n", ch,counter-1);
             buf[i+1] = '\0';
             i = 0;
 
@@ -62,18 +66,18 @@ int main()
             i = 0;
 
             if (isKeyword(buf))
-                printf("%s is a keyword\n", buf);
+                printf("%s is a keyword line number: %d\n", buf,counter-1);
             else
-                printf("%s is not recognized\n", buf);
+                printf("%s is not recognized line number: %d\n", buf,counter-1);
         }
 
         if ((ch == ' ' || ch == '\n') && (i != 0)) {
             switch (ch) {
                 case 0x20:
-                    printf("Break detected (space)\n");
+                    printf("Break detected (space) line number: %d\n",counter-1);
                     break;
                 case 0x10:
-                    printf("Break detected (newline)\n");
+                    printf("Break detected (newline) line number: %d\n",counter-1);
                     break;
                 default:
                     break;
@@ -84,9 +88,9 @@ int main()
             break_detected = 1;
 
             if (isKeyword(buf))
-                printf("%s is a keyword\n", buf);
+                printf("%s is a keyword line number: %d\n", buf,counter-1);
             else
-                printf("%s is not recognized\n", buf);
+                printf("%s is not recognized line number: %d\n", buf,counter-1);
 
             memset(buf, '\0', sizeof(buf));
         }
@@ -95,6 +99,7 @@ int main()
             buf[i] = ch;
             i++;
         }
+        
 
         break_detected = 0;
     }
